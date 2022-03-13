@@ -1,18 +1,27 @@
+/*
+  Rozwiązanie Zadania 1 - II Etap Rekrutacji
+  autor: Michał Kozłowski
+  data wykonania: 13.03.2022
+*/
+
+
 #include <iostream>
 #include <vector>
 #include <limits>
 #include <cstdio>
 
-
+//stała nieskonczona potrzebna do implementacji algorytmu Dijkstry
 const double inf = std::numeric_limits<double>::infinity();
 
-
+//pre-definicja struktur danych dla krawędzi i punktów
 class Node;
 class Edge;
 
+//utworzenie wektorów przechowujących strukturę hangaru
 std::vector<Node*> nodes;
 std::vector<Edge*> edges;
 
+//predefinicje funkcji potrzebnych do implementacji algorytmu
 void Algo();
 std::vector<Node*>* remaining_adjacent(Node*);
 Node* extract_smallest(std::vector<Node*>&);
@@ -21,6 +30,7 @@ bool contains(std::vector<Node*>&, Node*);
 void Solver(double, double, double);
 Node* NODES[14];
 
+//struktura reprezentująca punkt
 class Node {
 public:
     Node* prev;
@@ -31,24 +41,30 @@ public:
     }
 };
 
+//funkcja główna
 int main() {
+    //utworzenie zmiennych przechowujących koszty energetyczne poszczególnych rodzaji połączeń
     double r, g, y;
+
+    //wczytanie wartości kosztów energetycznych z wejscia standardowego
     std::cout << "Koszt energetyczny polaczen czerwonych:";
     std::cin >> r;
     std::cout << "Koszt energetyczny polaczen zielonych:";
     std::cin >> g;
     std::cout << "Koszt energetyczny polaczen zoltych:";
     std::cin >> y;
+
+    //Obliczenie odległości od punktu początkowego za pomocą Algorytmu Dijkstry
     Solver(r, g, y);
+
+    //Wypisanie rozwiązania na wyjście standardowe
     std::cout << "Koszt najkorzystniejszej trasy: " <<  NODES[1]->dist_from_A << std::endl;
+
+    //Zekończenie funkcji głównej programu
     return 0;
 }
 
-
-
-
-
-
+//Struktura reprezentująca krawędź / połączenie
 class Edge {
 public:
     std::pair<Node*, Node*>nodes;
@@ -65,11 +81,16 @@ public:
     }
 };
 
+//Funkcja odpowiadająca za zainicjowanie struktury hangaru do pamięci RAM i rozpoczęcia obliczania
 void Solver(double R, double G, double Y) {
+    //utworzenie 14 struktur reprezentujących skrzyżowania
     for(unsigned int i=0;i<14;i++){
         NODES[i] = new Node();
     }
+    //ustawienie punktu początkowego
     nodes[0]->dist_from_A=0;
+
+    //utworzenie krawędzi łączących skrzyżowania
     new Edge(std::pair<Node*, Node*>(nodes[ 0], nodes[ 9]),  10.0, G);
     new Edge(std::pair<Node*, Node*>(nodes[ 0], nodes[11]),  2.0,  Y);
     new Edge(std::pair<Node*, Node*>(nodes[ 1], nodes[ 2]),  5.0,  G);
@@ -90,9 +111,11 @@ void Solver(double R, double G, double Y) {
     new Edge(std::pair<Node*, Node*>(nodes[11], nodes[12]),  3.0,  R);
     new Edge(std::pair<Node*, Node*>(nodes[12], nodes[13]),  3.8,  R);
 
+    //wywołanie algorytmu Dijkstry
     Algo();
 }
 
+//Algorytm Dijkstry
 void Algo() {
     while(nodes.size() > 0) {
         Node* smallest = extract_smallest(nodes);
@@ -111,6 +134,8 @@ void Algo() {
     }
 }
 
+// Funkcje wymagane do zaimplementowania algorytmu Dijkstry
+
 Node* extract_smallest(std::vector<Node*>& _nodes) {
     unsigned int size = _nodes.size();
     if (size == 0) return NULL;
@@ -128,7 +153,7 @@ Node* extract_smallest(std::vector<Node*>& _nodes) {
 }
 
 std::vector<Node*>* remaining_adjacent(Node* node) {
-    /*std::vector<Node*>**/auto adjacent_nodes = new std::vector<Node*>();
+    auto adjacent_nodes = new std::vector<Node*>();
     const unsigned int size = edges.size();
     for(unsigned int i=0;i<size;++i) {
         Edge* edge = edges.at(i);
@@ -164,3 +189,8 @@ bool contains(std::vector<Node*>& nodes, Node* node) {
     }
     return false;
 }
+
+/*
+  autor: Michał Kozłowski
+  data wykonania: 13.03.2022
+*/
