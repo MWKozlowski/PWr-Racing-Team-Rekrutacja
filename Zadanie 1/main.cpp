@@ -10,23 +10,25 @@
 #include <limits>
 #include <cstdio>
 
+using namespace std;
+
 //stała nieskonczona potrzebna do implementacji algorytmu Dijkstry
-const double inf = std::numeric_limits<double>::infinity();
+constexpr double inf = numeric_limits<double>::infinity();
 
 //pre-definicja struktur danych dla krawędzi i punktów
 class Node;
 class Edge;
 
 //utworzenie wektorów przechowujących strukturę hangaru
-std::vector<Node*> nodes;
-std::vector<Edge*> edges;
+vector<Node*> nodes;
+vector<Edge*> edges;
 
 //predefinicje funkcji potrzebnych do implementacji algorytmu
 void Algo();
-std::vector<Node*>* remaining_adjacent(Node*);
-Node* extract_smallest(std::vector<Node*>&);
-double distance(std::pair<Node*,Node*>);
-bool contains(std::vector<Node*>&, Node*);
+vector<Node*>* remaining_adjacent(Node*);
+Node* extract_smallest(vector<Node*>&);
+double distance(pair<Node*,Node*>);
+bool contains(vector<Node*>&, Node*);
 void Solver(double, double, double);
 Node* NODES[14];
 
@@ -47,18 +49,30 @@ int main() {
     double r, g, y;
 
     //wczytanie wartości kosztów energetycznych z wejscia standardowego
-    std::cout << "Koszt energetyczny polaczen czerwonych:";
-    std::cin >> r;
-    std::cout << "Koszt energetyczny polaczen zielonych:";
-    std::cin >> g;
-    std::cout << "Koszt energetyczny polaczen zoltych:";
-    std::cin >> y;
+    cout << "Koszt energetyczny polaczen czerwonych:";
+    cin >> r;
+    if(r<0){
+      cout<<"Ujemne koszty nie sa dozwolone"<<endl;
+      return 1;
+    }
+    cout << "Koszt energetyczny polaczen zielonych:";
+    cin >> g;
+    if(g<0){
+      cout<<"Ujemne koszty nie sa dozwolone"<<endl;
+      return 1;
+    }
+    cout << "Koszt energetyczny polaczen zoltych:";
+    cin >> y;
+    if(y<0){
+      cout<<"Ujemne koszty nie sa dozwolone"<<endl;
+      return 1;
+    }
 
     //Obliczenie odległości od punktu początkowego za pomocą Algorytmu Dijkstry
     Solver(r, g, y);
 
     //Wypisanie rozwiązania na wyjście standardowe
-    std::cout << "Koszt najkorzystniejszej trasy: " <<  NODES[1]->dist_from_A << std::endl;
+    cout << "Koszt najkorzystniejszej trasy: " <<  NODES[1]->dist_from_A << endl;
 
     //Zekończenie funkcji głównej programu
     return 0;
@@ -67,13 +81,13 @@ int main() {
 //Struktura reprezentująca krawędź / połączenie
 class Edge {
 public:
-    std::pair<Node*, Node*>nodes;
+    pair<Node*, Node*>nodes;
     double cost;
-    Edge(std::pair<Node*, Node*>nodes, double raw_cost, double cost_coef)
+    Edge(pair<Node*, Node*>nodes, double raw_cost, double cost_coef)
     : nodes(nodes), cost(raw_cost*cost_coef) {
         edges.push_back(this);
     }
-    bool connects(std::pair<Node*, Node*>_nodes) {
+    bool connects(pair<Node*, Node*>_nodes) {
         return (
                 (_nodes.first == this->nodes.first && _nodes.second == this->nodes.second) ||
                 (_nodes.first == this->nodes.second && _nodes.second == this->nodes.first)
@@ -91,25 +105,25 @@ void Solver(double R, double G, double Y) {
     nodes[0]->dist_from_A=0;
 
     //utworzenie krawędzi łączących skrzyżowania
-    new Edge(std::pair<Node*, Node*>(nodes[ 0], nodes[ 9]),  10.0, G);
-    new Edge(std::pair<Node*, Node*>(nodes[ 0], nodes[11]),  2.0,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 1], nodes[ 2]),  5.0,  G);
-    new Edge(std::pair<Node*, Node*>(nodes[ 1], nodes[ 3]),  5.0,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 1], nodes[ 6]),  3.3,  R);
-    new Edge(std::pair<Node*, Node*>(nodes[ 2], nodes[ 8]),  2.2,  G);
-    new Edge(std::pair<Node*, Node*>(nodes[ 3], nodes[ 4]),  3.5,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 4], nodes[ 5]),  3.8,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 5], nodes[ 6]),  1.3,  R);
-    new Edge(std::pair<Node*, Node*>(nodes[ 5], nodes[13]),  2.0,  R);
-    new Edge(std::pair<Node*, Node*>(nodes[ 6], nodes[ 7]),  3.7,  G);
-    new Edge(std::pair<Node*, Node*>(nodes[ 7], nodes[ 8]),  1.7,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 7], nodes[10]),  4.2,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[ 8], nodes[ 9]),  7.8,  R);
-    new Edge(std::pair<Node*, Node*>(nodes[ 9], nodes[10]),  4.5,  G);
-    new Edge(std::pair<Node*, Node*>(nodes[10], nodes[13]),  3.5,  G);
-    new Edge(std::pair<Node*, Node*>(nodes[10], nodes[11]),  7.5,  Y);
-    new Edge(std::pair<Node*, Node*>(nodes[11], nodes[12]),  3.0,  R);
-    new Edge(std::pair<Node*, Node*>(nodes[12], nodes[13]),  3.8,  R);
+    new Edge(pair<Node*, Node*>(nodes[ 0], nodes[ 9]),  10.0, G);
+    new Edge(pair<Node*, Node*>(nodes[ 0], nodes[11]),  2.0,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 1], nodes[ 2]),  5.0,  G);
+    new Edge(pair<Node*, Node*>(nodes[ 1], nodes[ 3]),  5.0,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 1], nodes[ 6]),  3.3,  R);
+    new Edge(pair<Node*, Node*>(nodes[ 2], nodes[ 8]),  2.2,  G);
+    new Edge(pair<Node*, Node*>(nodes[ 3], nodes[ 4]),  3.5,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 4], nodes[ 5]),  3.8,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 5], nodes[ 6]),  1.3,  R);
+    new Edge(pair<Node*, Node*>(nodes[ 5], nodes[13]),  2.0,  R);
+    new Edge(pair<Node*, Node*>(nodes[ 6], nodes[ 7]),  3.7,  G);
+    new Edge(pair<Node*, Node*>(nodes[ 7], nodes[ 8]),  1.7,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 7], nodes[10]),  4.2,  Y);
+    new Edge(pair<Node*, Node*>(nodes[ 8], nodes[ 9]),  7.8,  R);
+    new Edge(pair<Node*, Node*>(nodes[ 9], nodes[10]),  4.5,  G);
+    new Edge(pair<Node*, Node*>(nodes[10], nodes[13]),  3.5,  G);
+    new Edge(pair<Node*, Node*>(nodes[10], nodes[11]),  7.5,  Y);
+    new Edge(pair<Node*, Node*>(nodes[11], nodes[12]),  3.0,  R);
+    new Edge(pair<Node*, Node*>(nodes[12], nodes[13]),  3.8,  R);
 
     //wywołanie algorytmu Dijkstry
     Algo();
@@ -119,11 +133,11 @@ void Solver(double R, double G, double Y) {
 void Algo() {
     while(nodes.size() > 0) {
         Node* smallest = extract_smallest(nodes);
-        std::vector<Node*>* adjacent_nodes = remaining_adjacent(smallest);
+        vector<Node*>* adjacent_nodes = remaining_adjacent(smallest);
         const int size = adjacent_nodes->size();
         for(unsigned int i = 0; i < size; ++i){
             Node* adjacent = adjacent_nodes->at(i);
-            double dist = distance(std::pair<Node*, Node*>(smallest, adjacent)) + smallest->dist_from_A;
+            double dist = distance(pair<Node*, Node*>(smallest, adjacent)) + smallest->dist_from_A;
 
             if(dist < adjacent->dist_from_A) {
                 adjacent->dist_from_A = dist;
@@ -136,7 +150,7 @@ void Algo() {
 
 // Funkcje wymagane do zaimplementowania algorytmu Dijkstry
 
-Node* extract_smallest(std::vector<Node*>& _nodes) {
+Node* extract_smallest(vector<Node*>& _nodes) {
     unsigned int size = _nodes.size();
     if (size == 0) return NULL;
     int smallest_pos = 0;
@@ -152,8 +166,8 @@ Node* extract_smallest(std::vector<Node*>& _nodes) {
     return smallest;
 }
 
-std::vector<Node*>* remaining_adjacent(Node* node) {
-    auto adjacent_nodes = new std::vector<Node*>();
+vector<Node*>* remaining_adjacent(Node* node) {
+    auto adjacent_nodes = new vector<Node*>();
     const unsigned int size = edges.size();
     for(unsigned int i=0;i<size;++i) {
         Edge* edge = edges.at(i);
@@ -170,7 +184,7 @@ std::vector<Node*>* remaining_adjacent(Node* node) {
     return adjacent_nodes;
 }
 
-double distance(std::pair<Node*,Node*>nodes) {
+double distance(pair<Node*,Node*>nodes) {
     const unsigned int size = edges.size();
     for (int i = 0; i < size; i++) {
         Edge* edge = edges.at(i);
@@ -180,7 +194,7 @@ double distance(std::pair<Node*,Node*>nodes) {
     }
 }
 
-bool contains(std::vector<Node*>& nodes, Node* node) {
+bool contains(vector<Node*>& nodes, Node* node) {
     const unsigned int size = nodes.size();
     for(unsigned int i = 0; i < size; i++) {
         if (node == nodes.at(i)) {
